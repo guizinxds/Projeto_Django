@@ -18,9 +18,12 @@ class ProfessorAdmin(admin.ModelAdmin):
     search_fields = ('nome_completo_professor',)
 
 # class TurmaAdmin(admin.ModelAdmin):
+#     list_display = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma')
+#     list_display_links = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma')
+#     search_fields = ('escolha_a_turma',)
 
 
-
+# admin.site.register(Turma,TurmaAdmin)
 admin.site.register(Aluno,AlunoAdmin)
 admin.site.register(Responsável,ResponsavelAdmin)
 admin.site.register(Professor,ProfessorAdmin)   

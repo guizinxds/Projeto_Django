@@ -27,30 +27,30 @@ class Professor(models.Model):
     def __str__(self):
         return self.nome_completo_professor
     
-class Turma(models.Model):
-    ITINERARIO_CHOICES = (
-        ('JG', 'JOGOS DIGITAIS'),
-        ('CN', 'CIÊNCIAS DA NATUREZA'),
-        ('DS', 'DESENVOLVIMENTO DE SISTEMAS'),
-        ('RS', 'REDES DE COMPUTADORES'),
-    )
+# class Turma(models.Model):
+#     ITINERARIO_CHOICES = (
+#         ('JG', 'JOGOS DIGITAIS'),
+#         ('CN', 'CIÊNCIAS DA NATUREZA'),
+#         ('DS', 'DESENVOLVIMENTO DE SISTEMAS'),
+#         ('RS', 'REDES DE COMPUTADORES'),
+#     )
 
-    TURMA_CHOICES = (
-        ('1A', '1 ANO A')
-        ('1B', '1 ANO B')
-        ('1C', '1 ANO C')
-        ('2A', '2 ANO A')
-        ('2B', '2 ANO B')
-        ('2C', '2 ANO C')
-        ('3A', '3 ANO A')
-        ('3B', '3 ANO B')
-        ('3C', '3 ANO C')
-    )
+#     TURMA_CHOICES = (
+#         ('1A', '1 ANO A')
+#         ('1B', '1 ANO B')
+#         ('1C', '1 ANO C')
+#         ('2A', '2 ANO A')
+#         ('2B', '2 ANO B')
+#         ('2C', '2 ANO C')
+#         ('3A', '3 ANO A')
+#         ('3B', '3 ANO B')
+#         ('3C', '3 ANO C')
+#     )
 
-    escolha_a_turma = models.CharField(max_length=2, choices=TURMA_CHOICES,blank=True, null=False)
-    descricao_da_turma = models.CharField(max_length=2, choices=ITINERARIO_CHOICES, verbose_name='Informe o Itinerário da Turma')
-    padrinho_da_turma = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='turmas',verbose_name='Padrinho da Turma', null=True, blank=False)
+#     escolha_a_turma = models.CharField(max_length=2, choices=TURMA_CHOICES,blank=True, null=False)
+#     descricao_da_turma = models.CharField(max_length=2, choices=ITINERARIO_CHOICES, verbose_name='Informe o Itinerário da Turma')
+#     padrinho_da_turma = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='turmas',verbose_name='Padrinho da Turma', null=True, blank=False)
 
 
-    def __str__(self):
-        return f"{self.escolha_a_turma} {self.padrinho_da_turma}"
+#     def __str__(self):
+#         return f"{self.escolha_a_turma} {self.padrinho_da_turma}"
