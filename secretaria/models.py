@@ -15,41 +15,41 @@ def validate_cpf(value):
         if digit != cpf[i]:
             raise ValidationError("CPF inválido.")
 
-    
+
 class Responsavel(models.Model):
-   nome_completo_responsavel = models.CharField(max_length=100,verbose_name='Nome Completo')
-   email_responsavel = models.EmailField(max_length=50, verbose_name='Email')
-   nascimento_responsavel = models.DateField(verbose_name='Data de Nascimento')
-   numero_responsavel = models.CharField(max_length=11,verbose_name='Número de telefone')
-   cpf_responsavel = models.CharField(max_length=11, unique=True, validators=[validate_cpf]),
+    nome_completo_responsavel = models.CharField(max_length=100, verbose_name='Nome Completo')
+    email_responsavel = models.EmailField(max_length=50, verbose_name='Email')
+    nascimento_responsavel = models.DateField(verbose_name='Data de Nascimento')
+    numero_responsavel = models.CharField(max_length=11, verbose_name='Número de telefone')
+    cpf_responsavel = models.CharField(max_length=11, unique=True, validators=[validate_cpf], null=True, blank=False)
+
+    def __str__(self):
+        return self.nome_completo_responsavel
 
 
-def __str__(self):
-       return self.nome_completo_responsavel
-
-class Aluno(models.Model):  
+class Aluno(models.Model):
     nome_completo = models.CharField(max_length=100)
     email = models.EmailField(max_length=50)
     data_de_nascimento = models.DateField()
-    numero_telefone = models.CharField(max_length=11,verbose_name="Insira o número de telefone")
+    numero_telefone = models.CharField(max_length=11, verbose_name="Insira o número de telefone")
     cpf_aluno = models.CharField(max_length=11, unique=True, validators=[validate_cpf])
-    responsavel = models.ForeignKey(Responsavel, models.CASCADE,
-    verbose_name="Responsável", related_name="alunos", blank = True, null = False)
-    
+    responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, related_name='alunos', verbose_name="Responsável")
+
     def __str__(self):
-        return self.nome_completo
-    
+        return f"{self.nome_completo} {self.responsavel}"
+
+
 class Professor(models.Model):
-    nome_completo_professor = models.CharField(max_length=100,verbose_name='Nome Completo')
+    nome_completo_professor = models.CharField(max_length=100, verbose_name='Nome Completo')
     email_professor = models.EmailField(max_length=50, verbose_name='Email')
     nascimento_professor = models.DateField(verbose_name='Data de Nascimento')
-    numero_professor = models.CharField(max_length=11,verbose_name='Número de telefone')
+    numero_professor = models.CharField(max_length=11, verbose_name='Número de telefone')
     cpf_professor = models.CharField(max_length=11, unique=True, validators=[validate_cpf])
-
 
     def __str__(self):
         return self.nome_completo_professor
-    
+
+
 class Turma(models.Model):
     ITINERARIO_CHOICES = (
         ('JG', 'JOGOS DIGITAIS'),
@@ -70,10 +70,9 @@ class Turma(models.Model):
         ('3C', '3 ANO C'),
     )
 
-    escolha_a_turma = models.CharField(max_length=2, choices=TURMA_CHOICES,blank=True, null=False)
+    escolha_a_turma = models.CharField(max_length=2, choices=TURMA_CHOICES, blank=True, null=False)
     descricao_da_turma = models.CharField(max_length=2, choices=ITINERARIO_CHOICES, verbose_name='Informe o Itinerário da Turma')
-    padrinho_da_turma = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='turmas',verbose_name='Padrinho da Turma', null=True, blank=False)
-
+    padrinho_da_turma = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='turmas', verbose_name='Padrinho da Turma', null=True, blank=False)
 
     def __str__(self):
         return f"{self.escolha_a_turma} {self.padrinho_da_turma}"
