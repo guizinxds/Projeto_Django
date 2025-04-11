@@ -17,6 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from secretaria import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('alunopdf',
+          views.ContratoAlunosPdfView.as_view(),
+          name='listar_aluno_pdf'),
+                    
 ]

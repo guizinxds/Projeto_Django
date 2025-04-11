@@ -14,6 +14,7 @@ def validate_cpf(value):
         digit = (value_sum * 10 % 11) % 10
         if digit != cpf[i]:
             raise ValidationError("CPF inválido.")
+        
 
 
 class Responsavel(models.Model):
@@ -49,7 +50,7 @@ class Professor(models.Model):
     def __str__(self):
         return self.nome_completo_professor
 
-
+           
 class Turma(models.Model):
     ITINERARIO_CHOICES = (
         ('JG', 'JOGOS DIGITAIS'),
