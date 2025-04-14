@@ -3,7 +3,7 @@ from secretaria.models import *
 
 
 class AlunoAdmin(admin.ModelAdmin):
-    list_display = ('nome_completo', 'email', 'data_de_nascimento','numero_telefone', 'cpf_aluno'   )
+    list_display = ('nome_completo', 'email', 'data_de_nascimento','numero_telefone', 'cpf_aluno', 'contrato_pdf_link')
     list_display_links = ('nome_completo', 'email', 'numero_telefone')
     search_fields = ('nome_completo',)
 

@@ -1,6 +1,9 @@
 from django.db import models
 from django.forms import ValidationError
 
+from django.utils.html import format_html
+from django.urls import reverse
+
 import re
 
 
@@ -37,7 +40,16 @@ class Aluno(models.Model):
     responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, related_name='alunos', verbose_name="Responsável")
 
     def __str__(self):
-        return f"{self.nome_completo} {self.responsavel}"
+        return self.nome_completo
+
+    # def __str__(self):
+    #     return f"{self.nome_completo} {self.responsavel}"
+    
+    def contrato_pdf_link(self):
+        url = reverse('contrato_pdf', args=[self.id])
+        return format_html('<a class="button" href="{}" target="_blank"> Gerar contrato PDF</a>', url)
+    
+        contrato_pdf_link.short_description = "Contrato em PDF"
 
 
 class Professor(models.Model):

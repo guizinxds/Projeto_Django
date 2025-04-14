@@ -5,7 +5,7 @@
     <style>
         body { font-family: DejaVu Sans; font-size: 12px; }
         h1 { text-align: center; }
-        p { text-align: justify; }
+        p { text-align:center; }
     </style>
 </head>
 
@@ -14,12 +14,13 @@
     <p>Eu, <strong>{{ aluno.nome_completo }}</strong>, CPF: <strong>{{ aluno.cpf_aluno }}</strong>, 
     declaro estar ciente das condições da matrícula.</p>
 
+    <p>Data de nascimento do aluno: {{ aluno.data_de_nascimento }}</p>
+    
     <p>Responsável: <strong>{{ aluno.responsavel.nome_completo_responsavel }}</strong>, 
     CPF: <strong>{{ aluno.responsavel.cpf_responsavel }}</strong>.</p>
 
-    <p>Data de nascimento do aluno: {{ aluno.data_de_nascimento }}</p>
 
-    <p>Assinatura do aluno: __________________________</p>
+   
     <p>Assinatura do responsável: _____________________</p>
 </body>
 </html>
