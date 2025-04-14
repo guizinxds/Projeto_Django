@@ -21,6 +21,10 @@ def validate_cpf(value):
 
 
 class Responsavel(models.Model):
+    class Meta:
+        verbose_name = "Responsável"
+        verbose_name_plural = "Responsáveis"
+
     nome_completo_responsavel = models.CharField(max_length=100, verbose_name='Nome Completo')
     email_responsavel = models.EmailField(max_length=50, verbose_name='Email')
     nascimento_responsavel = models.DateField(verbose_name='Data de Nascimento')
@@ -32,6 +36,10 @@ class Responsavel(models.Model):
 
 
 class Aluno(models.Model):
+    class Meta:
+        verbose_name = "Aluno"
+        verbose_name_plural = "Alunos"
+    
     nome_completo = models.CharField(max_length=100)
     email = models.EmailField(max_length=50)
     data_de_nascimento = models.DateField()
@@ -53,6 +61,10 @@ class Aluno(models.Model):
 
 
 class Professor(models.Model):
+    class Meta:
+        verbose_name = "Professor"
+        verbose_name_plural = "Proferrores"
+
     nome_completo_professor = models.CharField(max_length=100, verbose_name='Nome Completo')
     email_professor = models.EmailField(max_length=50, verbose_name='Email')
     nascimento_professor = models.DateField(verbose_name='Data de Nascimento')
