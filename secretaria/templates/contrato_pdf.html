@@ -5,22 +5,49 @@
     <style>
         body { font-family: DejaVu Sans; font-size: 12px; }
         h1 { text-align: center; }
-        p { text-align:center; }
+        h3{ font-size: 15px;}
+        .assinatura{text-align:center; font-weight: bold;}
+        .aluno{font-weight:bold; font-size: 11px;}
+        .infoA{ font-weight: lighter;}
+        .responsavel{font-weight: bold; font-size: 11px;}
+        .infoR{font-weight: lighter;}
     </style>
 </head>
 
 <body>
-    <h1>Contrato de Matrícula</h1>
-    <p>Eu, <strong>{{ aluno.nome_completo }}</strong>, CPF: <strong>{{ aluno.cpf_aluno }}</strong>, 
-    declaro estar ciente das condições da matrícula.</p>
-
-    <p>Data de nascimento do aluno: {{ aluno.data_de_nascimento }}</p>
+    <h1>Contrato de Matrícula</h1> 
     
-    <p>Responsável: <strong>{{ aluno.responsavel.nome_completo_responsavel }}</strong>, 
-    CPF: <strong>{{ aluno.responsavel.cpf_responsavel }}</strong>.</p>
+    <h2>Informações do Aluno</h2>
+    <p class="aluno">Nome do Aluno: <strong class="infoA">{{aluno.nome_completo}}</strong></p>
+    <p class="aluno">CPF do Aluno: <strong class="infoA">{{aluno.cpf_aluno}}</strong></p>
+    <p class="aluno">Data de Nascimento: <strong class="infoA">{{aluno.data_de_nascimento}}</strong></p>
+    <p class="aluno">Responsável Financeiro: <strong class="infoA">{{aluno.responsavel}}</strong></p>
+    <p class="aluno">Telefone do Aluno: <strong class = "infoA">{{aluno.numero_telefone}}</strong></p>
+    <p class="aluno">Email do Aluno: <strong class = "infoA">{{aluno.email}}</strong></p>
+
+    <h2>Informações do Responsável</h2>
+
+    <p class="responsavel">Nome do Responsável: <strong class="infoR">{{responsavel.nome_completo_responsavel}}</strong></p>
+    <p class="responsavel">CPF do Responsável: <strong class="infoR">{{responsavel.cpf_responsavel}}</strong></p>
+    <p class="responsavel">Data de Nascimento do Responsável: <strong class="infoR">{{responsavel.nascimento_responsavel}}</strong></p>
+    <p class="responsavel">Telefone do Reponsável: <strong class="infoR">{{responsavel.numero_responsavel}}</strong></p>
+    <p class="responsavel">Email do Responsável: <strong class="infoR">{{responsavel.email_responsavel}}</strong></p>
+
+    <br>
 
 
-   
-    <p>Assinatura do responsável: _____________________</p>
+    <p class="assinatura">O responsável {{responsavel.nome_completo_responsavel}}, portador do CPF {{responsavel.cpf_responsavel}}
+    , firma com o colégio Sesi Planalto a prestação de serviços educacionais para o(a) aluno(a) {{aluno.nome_completo}} no 
+    ano letivo de 2025. O valor mensal será de R$ 500,00, com vencimento todo dia 5. O contrato é válido de fevereiro a
+    dezembro de 2025. Ambas as partes concordam com os termos aqui descritos.</p>
+
+   <h2 class="assinatura">Assinatura do Responsável</h2>
+   <br>
+    <p class="assinatura"> _________________________________</p>
+    <br>
+    <h2 class="assinatura">Assinatura do Diretor</h2>
+    <br>
+    <p class="assinatura"> _________________________________</p>
+
 </body>
 </html>

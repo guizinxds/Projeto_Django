@@ -18,6 +18,12 @@ def validate_cpf(value):
         if digit != cpf[i]:
             raise ValidationError("CPF inválido.")
         
+def validate_nota(value):
+    if not (0 <= value <= 10):
+        raise ValidationError(
+            f"Nota inválida: {value}. A nota deve estar entre 0 e 10."
+        )
+        
 
 
 class Responsavel(models.Model):
@@ -39,13 +45,26 @@ class Aluno(models.Model):
     class Meta:
         verbose_name = "Aluno"
         verbose_name_plural = "Alunos"
-    
+
     nome_completo = models.CharField(max_length=100)
     email = models.EmailField(max_length=50)
     data_de_nascimento = models.DateField()
     numero_telefone = models.CharField(max_length=11, verbose_name="Insira o número de telefone")
     cpf_aluno = models.CharField(max_length=11, unique=True, validators=[validate_cpf])
-    responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, related_name='alunos', verbose_name="Responsável")
+    responsavel = models.ForeignKey(
+        'Responsavel',
+        on_delete=models.CASCADE,
+        related_name='alunos',
+        verbose_name="Responsável"
+    )
+
+    # 📎 Novo campo para anexar PDF
+    documento_pdf = models.FileField(
+        upload_to='documentos_alunos/',
+        null=True,
+        blank=True,
+        verbose_name="Anexar Contrato PDF"
+    )
 
     def __str__(self):
         return self.nome_completo
@@ -53,17 +72,17 @@ class Aluno(models.Model):
     # def __str__(self):
     #     return f"{self.nome_completo} {self.responsavel}"
     
-    def contrato_pdf_link(self):
-        url = reverse('contrato_pdf', args=[self.id])
-        return format_html('<a class="button" href="{}" target="_blank"> Gerar contrato PDF</a>', url)
+    # def contrato_pdf_link(self):
+    #     url = reverse('contrato_pdf', args=[self.id])
+    #     return format_html('<a class="button" href="{}" target="_blank"> Gerar contrato PDF</a>', url)
     
-        contrato_pdf_link.short_description = "Contrato em PDF"
+    #     contrato_pdf_link.short_description = "Contrato em PDF"
 
 
 class Professor(models.Model):
     class Meta:
         verbose_name = "Professor"
-        verbose_name_plural = "Proferrores"
+        verbose_name_plural = "Professores"
 
     nome_completo_professor = models.CharField(max_length=100, verbose_name='Nome Completo')
     email_professor = models.EmailField(max_length=50, verbose_name='Email')
@@ -101,3 +120,16 @@ class Turma(models.Model):
 
     def __str__(self):
         return f"{self.escolha_a_turma} {self.padrinho_da_turma}"
+    
+class Materia(models.Model):
+   
+        MATTER_CHOICES = (
+        ("CH", "Ciencias Humanas"),
+        ("L", "Linguagens"),
+        ("M", "Matematica"),
+        ("CN", "Ciencias da Natureza"),
+    )
+        matter_choices = models.CharField(max_length=50, choices=MATTER_CHOICES , blank=False, null=True,)
+
+        def _str_(self):
+            return f"{self.get_matter_choices_display()}"

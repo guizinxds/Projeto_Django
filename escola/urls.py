@@ -21,11 +21,7 @@ from secretaria import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    # path('alunopdf',
-    #       views.ContratoAlunosPdfView.as_view(),
-    #       name='listar_aluno_pdf'),
           
-path('contrato/pdf/<int:aluno_id>/', views.ContratoAlunosPdfView.as_view(), name='contrato_pdf'),
+    path('contrato/pdf/<int:aluno_id>/<int:responsavel_id>/', views.ContratoAlunosPdfView.as_view(), name='contrato_pdf'),
 
 ]
