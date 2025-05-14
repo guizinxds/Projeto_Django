@@ -58,7 +58,7 @@ class Aluno(models.Model):
         verbose_name="Responsável"
     )
 
-    # 📎 Novo campo para anexar PDF
+    #Campo para anexar PDF
     documento_pdf = models.FileField(
         upload_to='documentos_alunos/',
         null=True,
