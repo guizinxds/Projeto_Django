@@ -55,8 +55,8 @@ class Aluno(models.Model):
         'Responsavel',
         on_delete=models.CASCADE,
         related_name='alunos',
-        verbose_name="Responsável"
-    )
+        verbose_name="Responsável")
+    turma = models.ForeignKey("Turma", on_delete=models.CASCADE, related_name='alunos', verbose_name="Turma", null=True, blank=True)
 
     #Campo para anexar PDF
     documento_pdf = models.FileField(
@@ -133,3 +133,21 @@ class Materia(models.Model):
 
         def _str_(self):
             return f"{self.get_matter_choices_display()}"
+        
+class Nota(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas', verbose_name='Aluno')
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas', verbose_name='Turma') 
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='notas', verbose_name='Matéria')
+    nota1bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota1', null=True, blank=True)
+    nota2bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota2', null=True, blank=True)
+    nota3bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota3', null=True, blank=True)
+    nota4bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota4', null=True, blank=True)
+
+    media_final = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Média Final', null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.media_final = (self.nota1bim + self.nota2bim + self.nota3bim + self.nota4bim) / 4
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.aluno.nome_completo} - {self.turma.escolha_a_turma} - {self.materia.get_matter_choices_display()} - {self.media_final}'
