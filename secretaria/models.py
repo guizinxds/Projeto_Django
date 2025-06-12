@@ -119,7 +119,17 @@ class Turma(models.Model):
     padrinho_da_turma = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='turmas', verbose_name='Padrinho da Turma', null=True, blank=False)
 
     def __str__(self):
-        return f"{self.escolha_a_turma} {self.padrinho_da_turma}"
+        return self.escolha_a_turma
+    
+    def link_para_notas(self):
+
+        url = reverse('notas_por_bimestre') + f'?turma={self.escolha_a_turma}'
+        
+
+        return format_html('<a class="button" href="{}" target="_blank">Ver Notas</a>', url)
+    
+    link_para_notas.short_description = "Acessar Notas" 
+    link_para_notas.allow_tags = True 
     
 class Materia(models.Model):
    
@@ -134,19 +144,73 @@ class Materia(models.Model):
         def _str_(self):
             return f"{self.get_matter_choices_display()}"
         
-class Nota(models.Model):
-    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas', verbose_name='Aluno')
-    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas', verbose_name='Turma') 
-    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='notas', verbose_name='Matéria')
-    nota1bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota1', null=True, blank=True)
-    nota2bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota2', null=True, blank=True)
-    nota3bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota3', null=True, blank=True)
-    nota4bim = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Nota4', null=True, blank=True)
+class Nota1Bim(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas_1bim', verbose_name='Aluno')
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas_1bim', verbose_name='Turma') 
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='notas_1bim', verbose_name='Matéria')
+    atividade1 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade1', null=True, blank=True)
+    atividade2 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade2', null=True, blank=True)
+    simulado = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Simulado', null=True, blank=True)
+    prova = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Prova', null=True, blank=True)
 
     media_final = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Média Final', null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        self.media_final = (self.nota1bim + self.nota2bim + self.nota3bim + self.nota4bim) / 4
+        self.media_final = (self.atividade1 + self.atividade2 + self.simulado + self.prova) / 4
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.aluno.nome_completo} - {self.turma.escolha_a_turma} - {self.materia.get_matter_choices_display()} - {self.media_final}'
+    
+class Nota2Bim(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas_2bim', verbose_name='Aluno')
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas_2bim', verbose_name='Turma') 
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='notas_2bim', verbose_name='Matéria')
+    atividade1 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade1', null=True, blank=True)
+    atividade2 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade2', null=True, blank=True)
+    simulado = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Simulado', null=True, blank=True)
+    prova = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Prova', null=True, blank=True)
+
+    media_final = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Média Final', null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.media_final = (self.atividade1 + self.atividade2 + self.simulado + self.prova) / 4
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.aluno.nome_completo} - {self.turma.escolha_a_turma} - {self.materia.get_matter_choices_display()} - {self.media_final}'
+    
+class Nota3Bim(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas_3bim', verbose_name='Aluno')
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas_3bim', verbose_name='Turma') 
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='notas_3bim', verbose_name='Matéria')
+    atividade1 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade1', null=True, blank=True)
+    atividade2 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade2', null=True, blank=True)
+    simulado = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Simulado', null=True, blank=True)
+    prova = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Prova', null=True, blank=True)
+
+    media_final = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Média Final', null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.media_final = (self.atividade1 + self.atividade2 + self.simulado + self.prova) / 4
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.aluno.nome_completo} - {self.turma.escolha_a_turma} - {self.materia.get_matter_choices_display()} - {self.media_final}'
+    
+class Nota4Bim(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas_4bim', verbose_name='Aluno')
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas_4bim', verbose_name='Turma') 
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE, related_name='notas_4bim', verbose_name='Matéria')
+    atividade1 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade1', null=True, blank=True)
+    atividade2 = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Atividade2', null=True, blank=True)
+    simulado = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Simulado', null=True, blank=True)
+    prova = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Prova', null=True, blank=True)
+
+    media_final = models.DecimalField(max_digits=5, decimal_places=1, validators=[validate_nota], verbose_name='Média Final', null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.media_final = (self.atividade1 + self.atividade2 + self.simulado + self.prova) / 4
         super().save(*args, **kwargs)
 
     def __str__(self):

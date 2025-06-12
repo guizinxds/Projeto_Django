@@ -1,0 +1,32 @@
+<table class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Aluno</th>
+            <th>Turma</th>
+            <th>Matéria</th>
+            <th>Ativ. 1</th>
+            <th>Ativ. 2</th>
+            <th>Simulado</th>
+            <th>Prova</th>
+            <th>Média Final</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for nota in notas %}
+        <tr>
+            <td>{{ nota.aluno.nome_completo }}</td>
+            <td>{{ nota.turma.escolha_a_turma }}</td>
+            <td>{{ nota.materia.get_matter_choices_display }}</td>
+            <td>{{ nota.atividade1|default_if_none:"-" }}</td>
+            <td>{{ nota.atividade2|default_if_none:"-" }}</td>
+            <td>{{ nota.simulado|default_if_none:"-" }}</td>
+            <td>{{ nota.prova|default_if_none:"-" }}</td>
+            <td>{{ nota.media_final|default_if_none:"-" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8" class="text-center">Nenhuma nota registrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Notas por Bimestre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">Notas por Bimestre {% if turma_selecionada %}– {{ turma_selecionada.escolha_a_turma }}{% endif %}</h2>
+
+    <div class="mb-4">
+        <strong>Filtrar por turma:</strong>
+        <a href="?turma=" class="btn btn-outline-light btn-sm {% if not turma_selecionada %}active{% endif %}">Todas</a>
+        {% for turma in turmas %}
+            <a href="{% url 'notas_por_bimestre' %}?turma={{ turma.escolha_a_turma|urlencode }}"
+               class="btn btn-outline-light btn-sm {% if turma.escolha_a_turma == turma_selecionada.escolha_a_turma %}active{% endif %}">
+                {{ turma.escolha_a_turma }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <ul class="nav nav-tabs" id="bimestreTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="bim1-tab" data-bs-toggle="tab" data-bs-target="#bim1" type="button" role="tab">1º Bimestre</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="bim2-tab" data-bs-toggle="tab" data-bs-target="#bim2" type="button" role="tab">2º Bimestre</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="bim3-tab" data-bs-toggle="tab" data-bs-target="#bim3" type="button" role="tab">3º Bimestre</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="bim4-tab" data-bs-toggle="tab" data-bs-target="#bim4" type="button" role="tab">4º Bimestre</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="bimestreTabsContent">
+
+        <div class="tab-pane fade show active" id="bim1" role="tabpanel">
+            {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_1bim %}
+        </div>
+
+        <div class="tab-pane fade" id="bim2" role="tabpanel">
+            {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_2bim %}
+        </div>
+
+        <div class="tab-pane fade" id="bim3" role="tabpanel">
+            {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_3bim %}
+        </div>
+
+        <div class="tab-pane fade" id="bim4" role="tabpanel">
+            {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_4bim %}
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

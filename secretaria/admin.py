@@ -46,9 +46,8 @@ class NotaInlineFormSet(BaseInlineFormSet):
         return len(self.get_initial())
 
 
-class NotaInline(admin.TabularInline):
-    model = Nota
-    # formset = NotaInlineFormSet
+class Nota1BimInline(admin.TabularInline):
+    model = Nota1Bim
     extra = 1
     def formfield_for_foreignkey(self, db_field, request = None, **kwargs):
         if db_field.name == "aluno":
@@ -60,15 +59,53 @@ class NotaInline(admin.TabularInline):
                     kwargs['queryset'] = Aluno.objects.none()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
-    # fields = ('aluno', 'materia', 'nota1bim', 'nota2bim','nota3bim', 'nota4bim', 'media_final')
-    # readonly_fields = ('aluno',) #impede que o nome do aluno seja alterado no admin
+class Nota2BimInline(admin.TabularInline):
+    model = Nota2Bim
+    extra = 1
+    def formfield_for_foreignkey(self, db_field, request = None, **kwargs):
+        if db_field.name == "aluno":
+            if request.resolver_match:
+                turma_id = request.resolver_match.kwargs.get('object_id')
+                if turma_id:
+                    kwargs['queryset'] = Aluno.objects.filter(turma_id=turma_id)
+                else:
+                    kwargs['queryset'] = Aluno.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+class Nota3BimInline(admin.TabularInline):
+    model = Nota3Bim
+    extra = 1
+    def formfield_for_foreignkey(self, db_field, request = None, **kwargs):
+        if db_field.name == "aluno":
+            if request.resolver_match:
+                turma_id = request.resolver_match.kwargs.get('object_id')
+                if turma_id:
+                    kwargs['queryset'] = Aluno.objects.filter(turma_id=turma_id)
+                else:
+                    kwargs['queryset'] = Aluno.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
+class Nota4BimInline(admin.TabularInline):
+    model = Nota4Bim
+    extra = 1
+    def formfield_for_foreignkey(self, db_field, request = None, **kwargs):
+        if db_field.name == "aluno":
+            if request.resolver_match:
+                turma_id = request.resolver_match.kwargs.get('object_id')
+                if turma_id:
+                    kwargs['queryset'] = Aluno.objects.filter(turma_id=turma_id)
+                else:
+                    kwargs['queryset'] = Aluno.objects.none()
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    
 
 class TurmaAdmin(admin.ModelAdmin):
-    list_display = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma')
+    list_display = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma','link_para_notas',)
     list_display_links = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma')
     search_fields = ('escolha_a_turma',)
 
-    inlines = [NotaInline]
+
+    inlines = [Nota1BimInline, Nota2BimInline, Nota3BimInline, Nota4BimInline]
 
 class MateriaAdmin(admin.ModelAdmin):
     list_display = ("id", "matter_choices",)
