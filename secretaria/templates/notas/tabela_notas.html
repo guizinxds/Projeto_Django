@@ -9,19 +9,39 @@
 
 <div class="container mt-5">
 
-    <h2 class="mb-4 text-center">Notas por Bimestre {% if turma_selecionada %}– {{ turma_selecionada.escolha_a_turma }}{% endif %}</h2>
+    <h2 class="mb-4 text-center">Notas por Bimestre 
+        {% if turma_selecionada %}
+            – {{ turma_selecionada.escolha_a_turma }}
+        {% endif %}
+    </h2>
 
+    <!-- FILTRO POR TURMA -->
     <div class="mb-4">
         <strong>Filtrar por turma:</strong>
-        <a href="?turma=" class="btn btn-outline-light btn-sm {% if not turma_selecionada %}active{% endif %}">Todas</a>
+        <a href="?{% if materia_selecionada %}materia={{ materia_selecionada.id }}{% endif %}" 
+           class="btn btn-outline-light btn-sm {% if not turma_selecionada %}active{% endif %}">Todas</a>
         {% for turma in turmas %}
-            <a href="{% url 'notas_por_bimestre' %}?turma={{ turma.escolha_a_turma|urlencode }}"
-               class="btn btn-outline-light btn-sm {% if turma.escolha_a_turma == turma_selecionada.escolha_a_turma %}active{% endif %}">
+            <a href="?turma={{ turma.id }}{% if materia_selecionada %}&materia={{ materia_selecionada.id }}{% endif %}"
+               class="btn btn-outline-light btn-sm {% if turma.id == turma_selecionada.id %}active{% endif %}">
                 {{ turma.escolha_a_turma }}
             </a>
         {% endfor %}
     </div>
 
+    <!-- FILTRO POR MATÉRIA -->
+    <div class="mb-4">
+        <strong>Filtrar por matéria:</strong>
+        <a href="?{% if turma_selecionada %}turma={{ turma_selecionada.id }}{% endif %}"
+           class="btn btn-sm btn-outline-light {% if not materia_selecionada %}active{% endif %}">Todas</a>
+        {% for materia in materias %}
+            <a href="?materia={{ materia.id }}{% if turma_selecionada %}&turma={{ turma_selecionada.id }}{% endif %}"
+               class="btn btn-sm btn-outline-light {% if materia.id == materia_selecionada.id %}active{% endif %}">
+                {{ materia.get_matter_choices_display }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- TABS DE BIMESTRE -->
     <ul class="nav nav-tabs" id="bimestreTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="bim1-tab" data-bs-toggle="tab" data-bs-target="#bim1" type="button" role="tab">1º Bimestre</button>
@@ -38,23 +58,18 @@
     </ul>
 
     <div class="tab-content mt-3" id="bimestreTabsContent">
-
         <div class="tab-pane fade show active" id="bim1" role="tabpanel">
             {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_1bim %}
         </div>
-
         <div class="tab-pane fade" id="bim2" role="tabpanel">
             {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_2bim %}
         </div>
-
         <div class="tab-pane fade" id="bim3" role="tabpanel">
             {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_3bim %}
         </div>
-
         <div class="tab-pane fade" id="bim4" role="tabpanel">
             {% include 'notas/partials/parcial_tabela_notas.html' with notas=notas_4bim %}
         </div>
-
     </div>
 
 </div>

@@ -139,7 +139,8 @@ class Materia(models.Model):
         ("M", "Matematica"),
         ("CN", "Ciencias da Natureza"),
     )
-        matter_choices = models.CharField(max_length=50, choices=MATTER_CHOICES , blank=False, null=True,)
+        matter_choices = models.CharField(max_length=50, choices=MATTER_CHOICES , blank=False, null=True)
+        professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='materias', blank=False, null=True)
 
         def _str_(self):
             return f"{self.get_matter_choices_display()}"

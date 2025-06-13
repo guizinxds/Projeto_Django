@@ -46,7 +46,7 @@ class NotaInlineFormSet(BaseInlineFormSet):
         return len(self.get_initial())
 
 
-class Nota1BimInline(admin.TabularInline):
+class Nota1BimInline(admin.TabularInline):  
     model = Nota1Bim
     extra = 1
     def formfield_for_foreignkey(self, db_field, request = None, **kwargs):
@@ -104,7 +104,6 @@ class TurmaAdmin(admin.ModelAdmin):
     list_display_links = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma')
     search_fields = ('escolha_a_turma',)
 
-
     inlines = [Nota1BimInline, Nota2BimInline, Nota3BimInline, Nota4BimInline]
 
 class MateriaAdmin(admin.ModelAdmin):
@@ -119,6 +118,3 @@ admin.site.register(Responsavel,ResponsavelAdmin)
 admin.site.register(Aluno,AlunoAdmin)
 admin.site.register(Professor,ProfessorAdmin)   
 admin.site.register(Materia,MateriaAdmin)
-
-
-
