@@ -8,6 +8,8 @@ class AlunoAdmin(admin.ModelAdmin):
     list_display = ('nome_completo', 'email', 'data_de_nascimento','numero_telefone', 'cpf_aluno', 'contrato_pdf_link')
     list_display_links = ('nome_completo', 'email', 'numero_telefone')
     search_fields = ('nome_completo',)
+    change_list_template = "admin/secretaria/aluno/change_list.html"
+
 
     def contrato_pdf_link(self, obj):
         if obj.responsavel:
@@ -112,7 +114,10 @@ class MateriaAdmin(admin.ModelAdmin):
     search_fields = ("matter_choices",)
     list_filter = ("matter_choices",)
 
+class PerfilAdmin(admin.ModelAdmin):
+    list_display = ["user", "aluno", "responsavel"]
 
+admin.site.register(Perfil, PerfilAdmin)
 admin.site.register(Turma,TurmaAdmin)
 admin.site.register(Responsavel,ResponsavelAdmin)
 admin.site.register(Aluno,AlunoAdmin)

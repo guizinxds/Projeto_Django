@@ -3,6 +3,7 @@ from django.forms import ValidationError
 
 from django.utils.html import format_html
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 import re
 
@@ -68,15 +69,6 @@ class Aluno(models.Model):
 
     def __str__(self):
         return self.nome_completo
-
-    # def __str__(self):
-    #     return f"{self.nome_completo} {self.responsavel}"
-    
-    # def contrato_pdf_link(self):
-    #     url = reverse('contrato_pdf', args=[self.id])
-    #     return format_html('<a class="button" href="{}" target="_blank"> Gerar contrato PDF</a>', url)
-    
-    #     contrato_pdf_link.short_description = "Contrato em PDF"
 
 
 class Professor(models.Model):
@@ -216,3 +208,37 @@ class Nota4Bim(models.Model):
 
     def __str__(self):
         return f'{self.aluno.nome_completo} - {self.turma.escolha_a_turma} - {self.materia.get_matter_choices_display()} - {self.media_final}'
+    
+class Evento(models.Model):
+    titulo = models.CharField(max_length=100)
+    descricao = models.TextField()
+    data = models.DateField()
+    horario = models.TimeField()
+    publico_alvo = models.CharField(
+        max_length=20,
+        choices=[
+            ('todos','Todos'),('alunos','Alunos'),('reponsaveis','Responsáveis')],
+            default = 'todos'
+    )
+
+    def __str__(self):
+        return f"{self.titulo} - {self.data}"
+    
+class Mensalidade(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='mensalidades')
+    mes_referente = models.CharField(max_length=20) #ex: janeiro/2025
+    valor = models.DecimalField(max_digits=7, decimal_places=2)
+    pago = models.BooleanField(default=False)
+    data_pagamento = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.aluno.nome_completo} - {self.mes_referente} - {'Pago' if self.pago else 'Pagamento Pendente'}"
+    
+
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, null=True, blank=True)
+    responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username

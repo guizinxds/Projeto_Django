@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Minhas Notas{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Minhas Notas</h2>
+
+{% for bimestre, notas in [('1º Bimestre', notas_1bim), ('2º Bimestre', notas_2bim), ('3º Bimestre', notas_3bim), ('4º Bimestre', notas_4bim)] %}
+    <div class="card mb-4">
+        <div class="card-header">{{ bimestre }}</div>
+        <div class="card-body">
+            {% if notas %}
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Matéria</th>
+                        <th>Ativ. 1</th>
+                        <th>Ativ. 2</th>
+                        <th>Simulado</th>
+                        <th>Prova</th>
+                        <th>Média Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nota in notas %}
+                    <tr>
+                        <td>{{ nota.materia }}</td>
+                        <td>{{ nota.atividade1 }}</td>
+                        <td>{{ nota.atividade2 }}</td>
+                        <td>{{ nota.simulado }}</td>
+                        <td>{{ nota.prova }}</td>
+                        <td>{{ nota.media_final }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>Sem notas cadastradas para este bimestre.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}

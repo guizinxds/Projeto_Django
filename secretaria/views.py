@@ -1,6 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import View
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth import logout
 
 from secretaria.models import *
 from secretaria.utils import GeneratorPdf
@@ -25,14 +29,14 @@ def notas_por_bimestre(request):
     turma_selecionada = None
     materia_selecionada = None
 
-    # Turma por ID (int)
+    # Turma por ID 
     if turma_param:
         try:
             turma_selecionada = Turma.objects.get(id=int(turma_param))
         except (ValueError, Turma.DoesNotExist):
             turma_selecionada = None
 
-    # Matéria por ID (int)
+    # Matéria por ID 
     if materia_param:
         try:
             materia_selecionada = Materia.objects.get(id=int(materia_param))
@@ -64,3 +68,73 @@ def notas_por_bimestre(request):
         'notas_3bim': notas_3bim,
         'notas_4bim': notas_4bim,
     })
+
+@login_required
+def dashboard(request):
+
+    try:
+        perfil = request.user.perfil
+    except:
+        logout(request)
+        messages.error(request, "Seu perfil não está configurado. Contate a administração")
+        return redirect('dashboard')
+    
+    context = {
+        'perfil' : perfil,
+    }
+
+    return render(request, 'portal/dashboard.html', context)
+
+@login_required
+def minhas_notas(request):
+    perfil = request.user.perfil
+
+    if not perfil.aluno:
+        return HttpResponse("Apenas alunos tem acesso as notas")
+    
+    notas_1bim = Nota1Bim.objects.filter(aluno=perfil.aluno)
+    notas_2bim = Nota2Bim.objects.filter(aluno=perfil.aluno)
+    notas_3bim = Nota3Bim.objects.filter(aluno=perfil.aluno)
+    notas_4bim = Nota4Bim.objects.filter(aluno=perfil.aluno)
+
+    context ={
+        'perfil': perfil,
+        'notas_1bim': notas_1bim,
+        'notas_2bim': notas_2bim,
+        'notas_3bim': notas_3bim,
+        'notas_4bim': notas_4bim,
+    }
+
+    return render(request, 'porta/minhas_notas.html', context)
+
+@login_required
+def mensalidade(request):
+    perfil = request.user.perfil
+
+    if perfil.aluno:
+        mensalidades = Mensalidade.objects.filter(aluno=perfil.aluno)
+    elif perfil.responsavel:
+        mensalidades = Mensalidade.objects.filter(responsavel=perfil.responsavel)
+    else:
+        mensalidades = []
+
+    context = {
+        'perfil': perfil,
+        'mensalidades': mensalidades,
+    }
+
+    return render(request, 'portal/minhas_mensalidades.html', context)
+
+@login_required
+def eventos(request):
+    eventos = Evento.objects.all()
+
+    context = {
+        'eventos': eventos,
+    }
+
+    return render(request, 'portal/eventos.html', context)
+
+def home(request):
+    return render(request, 'home.html')
+    

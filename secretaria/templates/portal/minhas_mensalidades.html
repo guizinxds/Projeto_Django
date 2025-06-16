@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Minhas Mensalidades{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Minhas Mensalidades</h2>
+
+<div class="card">
+    <div class="card-body">
+        {% if mensalidades %}
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Mês</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Data de Vencimento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mensalidade in mensalidades %}
+                <tr>
+                    <td>{{ mensalidade.mes }}</td>
+                    <td>R$ {{ mensalidade.valor }}</td>
+                    <td>{{ mensalidade.status }}</td>
+                    <td>{{ mensalidade.data_vencimento|date:"d/m/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>Sem mensalidades cadastradas.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Bem-vindo, {{ perfil.user.username }}</h2>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Notas</h5>
+            <a href="{% url 'minhas_notas' %}" class="btn btn-primary mt-2">Ver Notas</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Mensalidades</h5>
+            <a href="{% url 'minhas_mensalidades' %}" class="btn btn-primary mt-2">Ver Mensalidades</a>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Eventos</h5>
+            <a href="{% url 'eventos' %}" class="btn btn-primary mt-2">Ver Eventos</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
