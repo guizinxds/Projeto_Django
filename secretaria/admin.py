@@ -10,7 +10,7 @@ class AlunoAdmin(admin.ModelAdmin):
     search_fields = ('nome_completo',)
     change_list_template = "admin/secretaria/aluno/change_list.html"
 
-
+ # BOTÃO QUE GERA O PDF DO CONTRATO ESCOLAR
     def contrato_pdf_link(self, obj):
         if obj.responsavel:
             url = reverse('contrato_pdf', args=[obj.id, obj.responsavel.id])
@@ -32,19 +32,22 @@ class ProfessorAdmin(admin.ModelAdmin):
 
 
 class NotaInlineFormSet(BaseInlineFormSet):
+    
+        # GARENTE QUE AS NOTAS EXISTENTES SEJAM CARREGADAS CORRETAMENTE
     def get_queryset(self):
-        # Garante que notas existentes sejam carregadas corretamente
         return super().get_queryset().select_related('aluno')
 
+
+        # GARANTE QUE OS ALUSO DA TURMA QUE AINDA NÃO TEM NOTA APAREÃM COMO NOVOS FURMULÁRIOS
     def get_initial(self):
-        # Garante que os alunos da turma que ainda não têm nota apareçam como novos formulários
         turma = self.instance
         alunos_com_nota = self.get_queryset().values_list("aluno_id", flat=True)
         alunos_sem_nota = Aluno.objects.filter(turma=turma).exclude(id__in=alunos_com_nota)
         return [{'aluno': aluno} for aluno in alunos_sem_nota]
 
+
+        # CRIA TANTO FORMULÁRIOS EXTRAS QUANTO ALUNOS QUE AINDA NÃO TEM NOTAS
     def get_extra(self):
-        # Cria tantos formulários extras quanto alunos ainda não têm notas
         return len(self.get_initial())
 
 
@@ -116,7 +119,20 @@ class MateriaAdmin(admin.ModelAdmin):
 
 class PerfilAdmin(admin.ModelAdmin):
     list_display = ["user", "aluno", "responsavel"]
+    readonly_fields = ('responsavel',)
 
+class EventoAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'descricao', 'data', 'horario', 'publico_alvo',)
+    list_display_links = ('titulo', 'descricao', 'data',)
+    search_fields = ('titulo',)
+
+class MensalidadeAdmin(admin.ModelAdmin):
+    list_display = ('aluno', 'mes_referente', 'valor', 'pago', 'data_pagamento',)
+    list_display_links = ('aluno', 'pago', 'data_pagamento',)
+    search_fields = ('aluno',)
+
+admin.site.register(Mensalidade, MensalidadeAdmin)
+admin.site.register(Evento, EventoAdmin)
 admin.site.register(Perfil, PerfilAdmin)
 admin.site.register(Turma,TurmaAdmin)
 admin.site.register(Responsavel,ResponsavelAdmin)

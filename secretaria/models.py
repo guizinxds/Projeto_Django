@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 import re
 
-
+# VALIDADOR DE CPF
 def validate_cpf(value):
     cpf = [int(char) for char in value if char.isdigit()]
     if len(cpf) != 11 or len(set(cpf)) == 1:
@@ -18,7 +18,9 @@ def validate_cpf(value):
         digit = (value_sum * 10 % 11) % 10
         if digit != cpf[i]:
             raise ValidationError("CPF inválido.")
-        
+
+
+# VALIDADOR DE NOTAS    
 def validate_nota(value):
     if not (0 <= value <= 10):
         raise ValidationError(
@@ -26,7 +28,7 @@ def validate_nota(value):
         )
         
 
-
+# MODEL DOS RESPONSÁVEIS
 class Responsavel(models.Model):
     class Meta:
         verbose_name = "Responsável"
@@ -41,7 +43,7 @@ class Responsavel(models.Model):
     def __str__(self):
         return self.nome_completo_responsavel
 
-
+# MODEL DOS ALUNOS
 class Aluno(models.Model):
     class Meta:
         verbose_name = "Aluno"
@@ -59,7 +61,7 @@ class Aluno(models.Model):
         verbose_name="Responsável")
     turma = models.ForeignKey("Turma", on_delete=models.CASCADE, related_name='alunos', verbose_name="Turma", null=True, blank=True)
 
-    #Campo para anexar PDF
+    #CAMPO PARA ANEXAR PDF
     documento_pdf = models.FileField(
         upload_to='documentos_alunos/',
         null=True,
@@ -70,7 +72,7 @@ class Aluno(models.Model):
     def __str__(self):
         return self.nome_completo
 
-
+# MODELS DOS PROFESSORES
 class Professor(models.Model):
     class Meta:
         verbose_name = "Professor"
@@ -85,7 +87,7 @@ class Professor(models.Model):
     def __str__(self):
         return self.nome_completo_professor
 
-           
+# MODELS DAS TURMAS
 class Turma(models.Model):
     ITINERARIO_CHOICES = (
         ('JG', 'JOGOS DIGITAIS'),
@@ -112,7 +114,9 @@ class Turma(models.Model):
 
     def __str__(self):
         return self.escolha_a_turma
-    
+
+
+    # BOTÃO CRIADO PARA ACESSAR A PÁGINA DE NOTAS DAS TURMAS
     def link_para_notas(self):
 
         url = reverse('notas_por_bimestre') + f'?turma={self.escolha_a_turma}'
@@ -122,7 +126,9 @@ class Turma(models.Model):
     
     link_para_notas.short_description = "Acessar Notas" 
     link_para_notas.allow_tags = True 
-    
+
+
+# MODELS DAS MATERIAS   
 class Materia(models.Model):
    
         MATTER_CHOICES = (
@@ -134,9 +140,11 @@ class Materia(models.Model):
         matter_choices = models.CharField(max_length=50, choices=MATTER_CHOICES , blank=False, null=True)
         professor = models.ForeignKey(Professor, on_delete=models.CASCADE, related_name='materias', blank=False, null=True)
 
-        def _str_(self):
+        def __str__(self):
             return f"{self.get_matter_choices_display()}"
-        
+
+     
+# MODELS DAS NOTAS DIVIDIDAS POR BIMESTRE    
 class Nota1Bim(models.Model):
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas_1bim', verbose_name='Aluno')
     turma = models.ForeignKey(Turma, on_delete=models.CASCADE, related_name='notas_1bim', verbose_name='Turma') 
@@ -209,10 +217,12 @@ class Nota4Bim(models.Model):
     def __str__(self):
         return f'{self.aluno.nome_completo} - {self.turma.escolha_a_turma} - {self.materia.get_matter_choices_display()} - {self.media_final}'
     
+
+# MODEL DOS EVENTOS
 class Evento(models.Model):
     titulo = models.CharField(max_length=100)
     descricao = models.TextField()
-    data = models.DateField()
+    data = models.DateField()   
     horario = models.TimeField()
     publico_alvo = models.CharField(
         max_length=20,
@@ -223,10 +233,16 @@ class Evento(models.Model):
 
     def __str__(self):
         return f"{self.titulo} - {self.data}"
-    
+
+
+# MODEL DAS MENSALIDADES
 class Mensalidade(models.Model):
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='mensalidades')
-    mes_referente = models.CharField(max_length=20) #ex: janeiro/2025
+    mes_referente = models.CharField(max_length=20,
+    choices=[
+        ('Janeiro','Janeiro'),('Fevereiro','Fevereiro'),('Março','Março'),('Abril','Abril'),('Maio','Maio'),('Junho','Junho'),('Julho','Julho'),('Agosto','Agosto'),('Setembro','Setembro'),('Outubro','Outubro'),('Novembro','Novembro'),('Dezembro','Dezembro')
+    ],
+        default = '-----') 
     valor = models.DecimalField(max_digits=7, decimal_places=2)
     pago = models.BooleanField(default=False)
     data_pagamento = models.DateField(null=True, blank=True)
@@ -234,11 +250,21 @@ class Mensalidade(models.Model):
     def __str__(self):
         return f"{self.aluno.nome_completo} - {self.mes_referente} - {'Pago' if self.pago else 'Pagamento Pendente'}"
     
-
+# MODEL DOS PERFIS
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, null=True, blank=True)
     responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, null=True, blank=True)
+
+# NAO PERMITE QUE O RESPONSÁVEL DO PERFIL SEJA ALTERADO, POIS ESTA PEGANDO AS INFORMAÇÕES DO ALUNO SELECIONADO, ASSIM RECEBENDO O RESPONSÁVEL AUTOMATICAMENTE
+    def save(self, *args, **kwargs):
+        if self.aluno and not self.responsavel:
+            self.responsavel = self.aluno.responsavel
+            
+        if self.pk:
+            original = Perfil.objects.get(pk=self.pk)
+            self.responsavel = original.responsavel
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username

@@ -4,9 +4,9 @@
 {% block content %}
 <h2 class="mb-4">Minhas Notas</h2>
 
-{% for bimestre, notas in [('1º Bimestre', notas_1bim), ('2º Bimestre', notas_2bim), ('3º Bimestre', notas_3bim), ('4º Bimestre', notas_4bim)] %}
+{% for bimestre, notas in bimestres %}
     <div class="card mb-4">
-        <div class="card-header">{{ bimestre }}</div>
+        <div class="card-header text-white">{{ bimestre }}</div>
         <div class="card-body">
             {% if notas %}
             <table class="table table-dark table-striped">
@@ -34,7 +34,7 @@
                 </tbody>
             </table>
             {% else %}
-                <p>Sem notas cadastradas para este bimestre.</p>
+                <p class="text-white">Sem notas cadastradas para este bimestre.</p>
             {% endif %}
         </div>
     </div>
