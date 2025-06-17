@@ -64,8 +64,8 @@ python manage.py runserver
 
 Admin Django: http://127.0.0.1:8000/admin/
 
-#🧠 Funcionalidades do Sistema
-##👩‍🎓 Gestão de Alunos
+# 🧠 Funcionalidades do Sistema
+## 👩‍🎓 Gestão de Alunos
 Cadastro completo de alunos
 
 Associação de responsáveis
