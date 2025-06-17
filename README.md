@@ -30,6 +30,7 @@ Sistema desenvolvido em Django para gestão escolar, com funcionalidades de cont
 1. **Clone ou extraia o projeto:**
 
 bash
+
 git clone <https://github.com/guizinxds/Projeto_Django>
 
 2. **Acesse a pasta do projeto:**
@@ -40,16 +41,19 @@ cd Sistema_Secretaria/Sistema_Secretaria
 3. **Crie e ative um ambiente virtual:**
 
 python -m venv env
+
 env/Scripts/activate
 
 4. **Instale as dependências necessárias:**
 
 pip install django
+
 pip install xhtml2pdf
 
 5. **Realize as migrações do banco de dados:**
 
 python manage.py makemigrations
+
 python manage.py migrate
 
 6. **Crie um superusuário (administrador):**
