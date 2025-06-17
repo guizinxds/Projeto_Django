@@ -72,42 +72,42 @@ Associação de responsáveis
 
 Visualização de dados do aluno
 
-👨‍🏫 Gestão de Professores
+# 👨‍🏫 Gestão de Professores
 Cadastro de professores
 
 Login diferenciado para professores
 
-📚 Gestão de Turmas
+# 📚 Gestão de Turmas
 Criação e edição de turmas
 
 Associação de alunos às turmas
 
 Visualização de lista de alunos por turma
 
-📝 Lançamento de Notas
+# 📝 Lançamento de Notas
 Cadastro e edição de notas
 
 Relatórios de desempenho por aluno
 
-📑 Geração de Documentos
+# 📑 Geração de Documentos
 Geração de contratos em PDF
 
 Geração de boletos ou comprovantes
 
-📅 Eventos e Comunicados
+# 📅 Eventos e Comunicados
 Cadastro e listagem de eventos escolares
 
-🔐 Sistema de Login
+# 🔐 Sistema de Login
 Login personalizado para administradores, professores e alunos
 
-💡 Observações
+# 💡 Observações
 O projeto utiliza SQLite por padrão, mas pode ser facilmente configurado para PostgreSQL, MySQL ou outro banco de dados editando o arquivo settings.py.
 
 Arquivos estáticos devem ser corretamente configurados para ambientes de produção.
 
 Recomenda-se utilizar ferramentas como Docker e servidores como Gunicorn/Nginx em produção.
 
-📜 Licença
+# 📜 Licença
 Projeto desenvolvido para fins educacionais e institucionais. Uso interno.
 
 
