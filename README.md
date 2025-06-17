@@ -100,14 +100,10 @@ Cadastro e listagem de eventos escolares
 # 🔐 Sistema de Login
 Login personalizado para administradores, professores e alunos
 
-# 💡 Observações
-O projeto utiliza SQLite por padrão, mas pode ser facilmente configurado para PostgreSQL, MySQL ou outro banco de dados editando o arquivo settings.py.
 
-Arquivos estáticos devem ser corretamente configurados para ambientes de produção.
+# ✍️ Autor
+Desenvolvido por [Guilherme Ferreira].
 
-Recomenda-se utilizar ferramentas como Docker e servidores como Gunicorn/Nginx em produção.
 
-# 📜 Licença
-Projeto desenvolvido para fins educacionais e institucionais. Uso interno.
 
 
