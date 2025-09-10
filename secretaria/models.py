@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import ValidationError
+from django.utils import timezone
 
 from django.utils.html import format_html
 from django.urls import reverse
@@ -74,6 +75,8 @@ class Aluno(models.Model):
 
 # MODELS DOS PROFESSORES
 class Professor(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores"
@@ -255,16 +258,35 @@ class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, null=True, blank=True)
     responsavel = models.ForeignKey(Responsavel, on_delete=models.CASCADE, null=True, blank=True)
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
 
-# NAO PERMITE QUE O RESPONSÁVEL DO PERFIL SEJA ALTERADO, POIS ESTA PEGANDO AS INFORMAÇÕES DO ALUNO SELECIONADO, ASSIM RECEBENDO O RESPONSÁVEL AUTOMATICAMENTE
-    def save(self, *args, **kwargs):
-        if self.aluno and not self.responsavel:
-            self.responsavel = self.aluno.responsavel
-            
-        if self.pk:
-            original = Perfil.objects.get(pk=self.pk)
-            self.responsavel = original.responsavel
-        super().save(*args, **kwargs)
+class Aula(models.Model):
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
+    data = models.DateField(default=timezone.now, verbose_name="Data da Aula")
+    assunto = models.CharField(max_length=200, blank=True, null=True, verbose_name="Assunto da Aula")
+
+    class Meta:
+        unique_together = ('turma', 'data')
+        verbose_name = "Aula"
+        verbose_name_plural = "Aulas"
 
     def __str__(self):
-        return self.user.username
+        return f"Aula de {self.turma.escolha_a_turma} em {self.data.strftime('%d/%m/%Y')}"
+
+# MODELO DE PRESENÇA
+class Presenca(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    aula = models.ForeignKey(Aula, on_delete=models.CASCADE)
+    presente = models.BooleanField(default=False)
+
+    class Meta: 
+        unique_together = ('aluno', 'aula')
+        verbose_name = "Presença"
+        verbose_name_plural = "Presenças"
+
+    def __str__(self):
+        status = "Presente" if self.presente else "Faltou"
+        return f"{self.aluno.nome_completo} - {status} em {self.aula.data.strftime('%d/%m/%Y')}"
+
+# NAO PERMITE QUE O RESPONSÁVEL DO PERFIL SEJA ALTERADO, POIS ESTA PEGANDO AS INFORMAÇÕES DO ALUNO SELECIONADO, ASSIM RECEBENDO O RESPONSÁVEL AUTOMATICAMENTE
+    # O método save e __str__ abaixo pertencem ao modelo Perfil, não Aula

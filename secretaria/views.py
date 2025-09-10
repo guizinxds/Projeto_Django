@@ -7,6 +7,11 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.template.loader import get_template
 
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from django.utils import timezone
+
+
 from xhtml2pdf import pisa
 
 from secretaria.models import *
@@ -186,8 +191,35 @@ def gerar_boleto(request, mensalidade_id):
         return HttpResponse('Erro ao gerar PDF', status=500)
     return response
 
+@login_required
+def dashboard_professor(request):
+    professor = get_object_or_404(Professor, user=request.user)
+    turmas = Turma.objects.filter(padrinho_da_turma=professor)
 
+    context = {
+        'professor': professor,
+        'turmas' : turmas
+    }
 
+    return render(request, 'professor/dashboard.html', context)
 
+class ProfessorLoginView(LoginView):
+    template_name = 'professor/login.html'
+    redirect_authenticated_user = True
 
+    def get_success_url(self):
+        return reverse_lazy('dashboard_professor')
     
+    def professor_logout_view(request):
+        logout(request)
+        messages.sucess(request, "Você saiu da sua conta com sucesso")
+        return redirect('login_professor')
+
+@login_required
+def fazer_chamada(request, turma_id):
+    try:
+        professor = request.user.professor
+    except Professor.DoesNotExist:
+        return redirect('home')
+    
+    turma = get_object_or_404(Turma, id=turma_id)

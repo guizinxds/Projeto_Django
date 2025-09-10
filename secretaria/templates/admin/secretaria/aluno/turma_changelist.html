@@ -1,0 +1,20 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+    {# Mantém os botões padrão do Django (ex: "Adicionar Turma") #}
+    {{ block.super }}
+
+    {# Seu botão de Frequência #}
+    <li>
+        <a href="/frequencia/" class="button" style="background: #007bff; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none;">
+            ✅ Frequência
+        </a>
+    </li>
+
+    {# Seu botão de Ver Notas #}
+    <li>
+        <a href="/notas/" class="button" style="background: #007bff; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none;">
+            🗒️ Ver Notas
+        </a>
+    </li>
+{% endblock %}

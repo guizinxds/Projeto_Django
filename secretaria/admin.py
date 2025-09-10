@@ -108,6 +108,7 @@ class TurmaAdmin(admin.ModelAdmin):
     list_display = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma','link_para_notas',)
     list_display_links = ('escolha_a_turma','descricao_da_turma', 'padrinho_da_turma')
     search_fields = ('escolha_a_turma',)
+    change_list_template = "admin/secretaria/aluno/turma_changelist.html"
 
     inlines = [Nota1BimInline, Nota2BimInline, Nota3BimInline, Nota4BimInline]
 
