@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.template.loader import get_template
-
+from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 from django.utils import timezone
@@ -17,6 +17,8 @@ from xhtml2pdf import pisa
 from secretaria.models import *
 from secretaria.utils import GeneratorPdf
 
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyTokenObtainPairSerializer
 
 class ContratoAlunosPdfView(View, GeneratorPdf):
     def get(self, request, aluno_id, responsavel_id, *args, **kwargs):
@@ -223,3 +225,36 @@ def fazer_chamada(request, turma_id):
         return redirect('home')
     
     turma = get_object_or_404(Turma, id=turma_id)
+    
+    
+#testes thiago 24/09
+
+# secretaria/views.py (adicione no final)
+
+# --- NOSSAS VIEWS DE API PARA O REACT COMEÇAM AQUI ---
+
+def api_listar_alunos(request):
+    """
+    Esta view busca todos os alunos e retorna seus dados em formato JSON.
+    """
+    # 1. Busca os dados do banco. Usamos .values() para já transformar em um formato
+    #    parecido com o que o JSON precisa, selecionando só os campos que queremos.
+    alunos = Aluno.objects.all().values(
+        'id', 
+        'nome_completo', 
+        'email', 
+        'cpf_aluno', 
+        'turma__escolha_a_turma' # Exemplo de como pegar um campo de uma ForeignKey
+    )
+
+    # 2. Converte o resultado para uma lista
+    alunos_lista = list(alunos)
+
+    # 3. Retorna a lista como uma resposta JSON
+    #    (safe=False é necessário para permitir que uma lista seja a resposta principal)
+    return JsonResponse(alunos_lista, safe=False)
+
+
+# View customizada que usa nosso serializer customizado
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
