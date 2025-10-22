@@ -1,0 +1,10 @@
+# secretaria/views.py
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required # Importante!
+
+@login_required # Isso protege a página, exigindo login
+def dashboard(request):
+    # Aqui você colocará a lógica para buscar os dados
+    # Por enquanto, vamos só renderizar a página
+    context = {} 
+    return render(request, 'dashboard.html', context)

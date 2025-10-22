@@ -7,8 +7,6 @@ from django.contrib.auth import views as auth_views
 # Importa as views do seu app secretaria
 from secretaria import views
 
-# Importa apenas a view de refresh, pois a de obter token agora é a nossa customizada
-from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     # SUAS URLS ORIGINAIS (para o site renderizado pelo Django)
@@ -23,16 +21,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('login/', auth_views.LoginView.as_view(template_name='portal/seu_login.html'), name='login'),
     path('mensalidade/pdf/<int:mensalidade_id>/',  views.gerar_boleto, name='gerar_boleto'),
-
-    # --- NOSSAS URLS DE API PARA O FRONT-END REACT ---
-    path('api/alunos/', views.api_listar_alunos, name='api_listar_alunos'),
-
-    # --- URLS DE AUTENTICAÇÃO E TOKEN ---
-    # Esta linha foi ATUALIZADA para usar a nossa view customizada (MyTokenObtainPairView)
-    path('api/token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    
-    # Esta linha permanece a mesma, usando a view padrão da biblioteca
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 # Configuração para servir arquivos de mídia em ambiente de desenvolvimento
