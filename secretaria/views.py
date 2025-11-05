@@ -167,7 +167,7 @@ def eventos(request):
     return render(request, 'portal/eventos.html', context)
 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'index.html')
 
 
 
