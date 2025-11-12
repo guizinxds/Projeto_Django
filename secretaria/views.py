@@ -9,6 +9,7 @@ from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView
 from django.utils import timezone
+from django.shortcuts import resolve_url  # ← IMPORT NECESSÁRIO
 
 from xhtml2pdf import pisa
 from secretaria.models import *
@@ -83,18 +84,18 @@ def notas_por_bimestre(request):
 
 @login_required
 def dashboard(request):
+    # Bloqueia superusuários (devem usar /admin)
+    if request.user.is_superuser:
+        return redirect('admin:index')
 
-    try:
-        perfil = request.user.perfil
-    except:
-        logout(request)
-        messages.error(request, "Seu perfil não está configurado. Contate a administração")
-        return redirect('dashboard')
-    
-    context = {
-        'perfil' : perfil,
-    }
+    perfil = getattr(request.user, 'perfil', None)
 
+    # Apenas alunos acessam o portal
+    if not perfil or not getattr(perfil, 'aluno', None):
+        messages.error(request, "Acesso restrito ao portal de alunos.")
+        return redirect('home')
+
+    context = {'perfil': perfil}
     return render(request, 'portal/dashboard.html', context)
 
 
@@ -102,27 +103,31 @@ def dashboard(request):
 
 @login_required
 def minhas_notas(request):
-    perfil = request.user.perfil
+    perfil = getattr(request.user, 'perfil', None)
 
-    if not perfil.aluno:
-        return HttpResponse("Apenas alunos tem acesso as notas")
-    
-    notas_1bim = Nota1Bim.objects.filter(aluno=perfil.aluno)
-    notas_2bim = Nota2Bim.objects.filter(aluno=perfil.aluno)
-    notas_3bim = Nota3Bim.objects.filter(aluno=perfil.aluno)
-    notas_4bim = Nota4Bim.objects.filter(aluno=perfil.aluno)
+    # Sem perfil ou sem aluno: mostra aviso e listas vazias para o template
+    if perfil is None or not getattr(perfil, 'aluno', None):
+        messages.info(request, "Apenas alunos possuem notas no portal.")
+        notas_1bim = Nota1Bim.objects.none()
+        notas_2bim = Nota2Bim.objects.none()
+        notas_3bim = Nota3Bim.objects.none()
+        notas_4bim = Nota4Bim.objects.none()
+    else:
+        notas_1bim = Nota1Bim.objects.filter(aluno=perfil.aluno)
+        notas_2bim = Nota2Bim.objects.filter(aluno=perfil.aluno)
+        notas_3bim = Nota3Bim.objects.filter(aluno=perfil.aluno)
+        notas_4bim = Nota4Bim.objects.filter(aluno=perfil.aluno)
 
-
-    bimestres =[
+    bimestres = [
         ('1º Bimestre', notas_1bim),
         ('2º Bimestre', notas_2bim),
         ('3º Bimestre', notas_3bim),
         ('4º Bimestre', notas_4bim),
     ]
 
-    context ={
+    context = {
         'perfil': perfil,
-        'bimestres':bimestres,
+        'bimestres': bimestres,
     }
 
     return render(request, 'portal/minhas_notas.html', context)
@@ -130,18 +135,30 @@ def minhas_notas(request):
 
 # página onde o usuário vê as informações de pagamento da mensalidade
 
+# function mensalidade(request)
 @login_required
 def mensalidade(request):
-    perfil = request.user.perfil
+    # Obtém o perfil de forma segura
+    perfil = getattr(request.user, 'perfil', None)
 
-    if perfil.aluno:
-        mensalidades = Mensalidade.objects.filter(aluno=perfil.aluno)
-    elif perfil.responsavel:
-        mensalidades = Mensalidade.objects.filter(responsavel=perfil.responsavel)
-    else:
+    # Sem Perfil: abre a página com listas vazias e um aviso
+    if perfil is None:
+        messages.info(
+            request,
+            "Você está logado sem Perfil vinculado. Não há mensalidades para exibir."
+        )
         mensalidades = Mensalidade.objects.none()
+    else:
+        # Aluno: mensalidades do próprio aluno
+        if perfil.aluno:
+            mensalidades = Mensalidade.objects.filter(aluno=perfil.aluno)
+        # Responsável: mensalidades de todos os alunos vinculados
+        elif perfil.responsavel:
+            mensalidades = Mensalidade.objects.filter(aluno__responsavel=perfil.responsavel)
+        # Outros perfis (ex.: professor): nenhuma mensalidade
+        else:
+            mensalidades = Mensalidade.objects.none()
 
-    #será conferido se a mensalidade está paga ou não
     mensalidades_pagas = mensalidades.filter(pago=True).order_by('data_pagamento')
     mensalidades_pendentes = mensalidades.filter(pago=False).order_by('data_pagamento')
 
@@ -167,7 +184,7 @@ def eventos(request):
     return render(request, 'portal/eventos.html', context)
 
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'home.html')
 
 
 
@@ -206,10 +223,12 @@ class ProfessorLoginView(LoginView):
     def get_success_url(self):
         return reverse_lazy('dashboard_professor')
     
-    def professor_logout_view(request):
-        logout(request)
-        messages.sucess(request, "Você saiu da sua conta com sucesso")
-        return redirect('login_professor')
+    # Função de logout no nível do módulo (fora de qualquer classe)
+    def logout_view(request):
+        if request.user.is_authenticated:
+            logout(request)
+            messages.success(request, "Você saiu da sua conta com sucesso.")
+        return redirect('login')
 
 @login_required
 def fazer_chamada(request, turma_id):
@@ -219,5 +238,48 @@ def fazer_chamada(request, turma_id):
         return redirect('home')
     
     turma = get_object_or_404(Turma, id=turma_id)
+
+class PortalLoginView(LoginView):
+    template_name = 'portal/seu_login.html'
+    redirect_authenticated_user = False
+
+    def get_success_url(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return resolve_url('login')
+
+        # Superusuário → /admin
+        if user.is_superuser:
+            return resolve_url('admin:index')
+
+        # Tentar localizar/criar vínculo de Perfil com Aluno
+        perfil = getattr(user, 'perfil', None)
+
+        aluno = None
+        if getattr(user, 'email', None):
+            aluno = Aluno.objects.filter(email__iexact=user.email).first()
+        if aluno is None:
+            aluno = Aluno.objects.filter(email__iexact=user.username).first()
+
+        if aluno:
+            if perfil is None:
+                perfil = Perfil.objects.create(user=user, aluno=aluno)
+            elif getattr(perfil, 'aluno', None) is None:
+                perfil.aluno = aluno
+                perfil.save()
+
+        # Aluno vinculado → /portal
+        if perfil and getattr(perfil, 'aluno', None):
+            return resolve_url('dashboard')
+
+        # Sem perfil ou sem aluno → home
+        return resolve_url('home')
+    
+    # Função de logout no nível do módulo (fora de qualquer classe)
+    def logout_view(request):
+        if request.user.is_authenticated:
+            logout(request)
+            messages.success(request, "Você saiu da sua conta com sucesso.")
+        return redirect('login')
     
     

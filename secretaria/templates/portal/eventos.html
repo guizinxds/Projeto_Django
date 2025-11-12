@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}Eventos{% endblock %}
-
 {% block content %}
-<h2 class="mb-4">Eventos</h2>
-
+<h2>Próximos Eventos</h2>
 <div class="row g-3">
-    {% for evento in eventos %}
-    <div class="col-md-4">
-        <div class="card p-3 h-100 text-white">
-            <h5>{{ evento.titulo }}</h5>
-            <p><strong>Data:</strong> {{ evento.data|date:"d/m/Y" }}</p>
-            <p>Descrição:</p>
-            <p>{{ evento.descricao }}</p>
-        </div>
+  {% for e in eventos %}
+    <div class="col-md-6">
+      <div class="card p-3">
+        <h5 class="card-title">{{ e.titulo }}</h5>
+        <p class="card-text">{{ e.descricao }}</p>
+        <span class="badge text-bg-secondary">
+          {{ e.data|date:"d/m/Y" }} {{ e.horario|time:"H:i" }}
+        </span>
+        <span class="badge text-bg-info">{{ e.publico_alvo|title }}</span>
+      </div>
     </div>
-    {% empty %}
-    <p>Não há eventos cadastrados.</p>
-    {% endfor %}
+  {% empty %}
+    <p>Sem eventos cadastrados.</p>
+  {% endfor %}
 </div>
 {% endblock %}

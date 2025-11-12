@@ -1,93 +1,57 @@
 {% extends 'base.html' %}
-{% block title %}Minhas Mensalidades{% endblock %}
-
+{% block title %}Mensalidades{% endblock %}
 {% block content %}
-<h2 class="mb-4">Minhas Mensalidades</h2>
+<h2>Mensalidades</h2>
 
-<!-- ABAS DE NAVEGAÇÃO -->
-<ul class="nav nav-tabs mb-4">
-    <li class="nav-item">
-        <a class="nav-link active" data-bs-toggle="tab" href="#pendentes">Pendentes</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-bs-toggle="tab" href="#pagas">Pagas</a>
-    </li>
-</ul>
+<h3>Pagas</h3>
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Mês</th>
+        <th>Valor</th>
+        <th>Data Pagamento</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in mensalidades_pagas %}
+        <tr>
+          <td>{{ m.mes_referente }}</td>
+          <td>R$ {{ m.valor }}</td>
+          <td>{{ m.data_pagamento|date:"d/m/Y" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3">Nenhuma mensalidade paga.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
-<div class="tab-content">
-    <!-- MENSALIDADES PENDENTES -->
-    <div class="tab-pane fade show active" id="pendentes">
-        <div class="card">
-            <div class="card-body">
-                {% if mensalidades_pendentes %}
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th>Mês</th>
-                            <th>Valor</th>
-                            <th>Status</th>
-                            <th>Data de Vencimento</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for mensalidade in mensalidades_pendentes %}
-                        <tr>
-                            <td>{{ mensalidade.mes_referente }}</td>
-                            <td>R$ {{ mensalidade.valor }}</td>
-                            <td class="text-danger">Pendente</td>
-                            <td>{{ mensalidade.data_pagamento|date:"d/m/Y" }}</td>
-                            <td>
-                                <a href="{% url 'gerar_boleto' mensalidade.id %}" target="_blank" class="btn btn-outline-light btn-sm">
-                                    Baixar Recibo
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                    <p class="text-white">Sem mensalidades pendentes.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <!-- MENSALIDADES PENDENTES -->
-    <div class="tab-pane fade" id="pagas">
-        <div class="card">
-            <div class="card-body">
-                {% if mensalidades_pagas %}
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th>Mês</th>
-                            <th>Valor</th>
-                            <th>Status</th>
-                            <th>Data de Pagamento</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for mensalidade in mensalidades_pagas %}
-                        <tr>
-                            <td>{{ mensalidade.mes_referente }}</td>
-                            <td>R$ {{ mensalidade.valor }}</td>
-                            <td class="text-success">Pago</td>
-                            <td>{{ mensalidade.data_pagamento|date:"d/m/Y" }}</td>
-                            <td>
-                                <!--BOTÃO PARA ACESSAR O RECIBO-->
-                                <a href="{% url 'gerar_boleto' mensalidade.id %}" target="_blank" class="btn btn-outline-light btn-sm">
-                                    Baixar Recibo
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                    <p class="text-white">Sem mensalidades pagas.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+<h3>Pendentes</h3>
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>Mês</th>
+        <th>Valor</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in mensalidades_pendentes %}
+        <tr>
+          <td>{{ m.mes_referente }}</td>
+          <td>R$ {{ m.valor }}</td>
+          <td>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'gerar_boleto' m.id %}">
+              Gerar boleto (PDF)
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3">Nenhuma mensalidade pendente.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

@@ -19,7 +19,7 @@ urlpatterns = [
     path('portal/mensalidades/', views.mensalidade, name='minhas_mensalidades'),
     path('portal/eventos/', views.eventos, name='eventos'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('login/', auth_views.LoginView.as_view(template_name='portal/seu_login.html'), name='login'),
+    path('login/', views.PortalLoginView.as_view(), name='login'),
     path('mensalidade/pdf/<int:mensalidade_id>/',  views.gerar_boleto, name='gerar_boleto'),
 ]
 
