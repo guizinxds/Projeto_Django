@@ -7,8 +7,8 @@
   .hero {
     margin-bottom: 24px;
     padding: 16px 0;
-  }
-  .hero h1 {
+  } 
+   .hero h1 {
     font-size: 2.4rem;
     font-weight: 700;
     letter-spacing: 0.2px;
@@ -25,12 +25,27 @@
 
   /* Cartões mais claros */
   .tile.card {
-    background: linear-gradient(180deg, #252b36 0%, #202733 100%);
-    border: 1px solid rgba(255,255,255,0.16);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.30);
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-    min-height: 180px;
+    background: #0f1c38;
+    border: 1px solid #1a2a4d;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    transition: box-shadow 0.2s, border 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tile.card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    transition: opacity 300ms ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tile.card:hover::before {
+    opacity: 1;
   }
   .tile.card:hover {
     transform: translateY(-4px);
@@ -101,16 +116,21 @@
   }
 </style>
 
-<div class="hero">
-  <h1>Bem-vindo, {{ request.user.username }}</h1>
-  <p>Escolha abaixo o que deseja acessar rapidamente.</p>
+<div class="dashboard-header" style="display: flex; align-items: center; gap: 32px; margin-bottom: 32px;">
+    <img src="/static/images/student1.png" alt="Student" style="height: 96px; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.08);">
+    <div>
+        <h1 style="font-size: 2.5rem; font-weight: bold; color: #222; text-shadow: 0 2px 8px rgba(255,255,255,0.25);">Bem-vindo, <span style="color: #4f8cff;">thiago</span></h1>
+        <p style="color: #444; font-size: 1.1rem;">Escolha abaixo o que deseja acessar rapidamente.</p>
+    </div>
 </div>
 
 <div class="row tiles-row g-4">
   <div class="col-12 col-md-4">
     <div class="tile card p-4 tile--notas">
       <div class="d-flex align-items-center mb-3">
-        <div class="icon-badge">📘</div>
+                <div class="icon-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-book-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12z" /><path d="M19 16h-12a2 2 0 0 0 -2 2" /><path d="M9 8h6" /></svg>
+        </div>
         <div class="ms-3">
           <div class="tile-title">Notas</div>
           <div class="tile-subtitle">Acompanhe suas notas por bimestre</div>
@@ -123,7 +143,9 @@
   <div class="col-12 col-md-4">
     <div class="tile card p-4 tile--mensalidades">
       <div class="d-flex align-items-center mb-3">
-        <div class="icon-badge">💳</div>
+                <div class="icon-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" /><path d="M3 10l18 0" /><path d="M7 15l.01 0" /><path d="M11 15l2 0" /></svg>
+        </div>
         <div class="ms-3">
           <div class="tile-title">Mensalidades</div>
           <div class="tile-subtitle">Pagas e pendentes, tudo em um só lugar</div>
@@ -136,7 +158,9 @@
   <div class="col-12 col-md-4">
     <div class="tile card p-4 tile--eventos">
       <div class="d-flex align-items-center mb-3">
-        <div class="icon-badge">📅</div>
+                <div class="icon-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-event"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M16 3l0 4" /><path d="M8 3l0 4" /><path d="M4 11l16 0" /><path d="M8 15h2v2h-2z" /></svg>
+        </div>
         <div class="ms-3">
           <div class="tile-title">Eventos</div>
           <div class="tile-subtitle">Veja os próximos eventos da escola</div>
