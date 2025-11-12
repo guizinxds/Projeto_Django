@@ -43,7 +43,10 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark mb-4">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'dashboard' %}">Portal Escolar</a>
+        <a class="navbar-brand d-flex align-items-center" href="/portal/">
+            <img src="/static/images/logobranco-classup-isotipo.svg" alt="Logo" style="height: 50px; margin-right: 12px;">
+            Portal Escolar
+        </a>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Início</a></li>
